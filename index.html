@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TAF PRF</title>
+<meta name="description" content="Acompanhe seus treinos do TAF da PRF: pontos, metas do edital 2021, gráficos e cronômetros.">
+<meta name="theme-color" content="#1d4a7a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TAF PRF">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: app de celular, uma tela por aba, barra de abas fixa embaixo.
+   Identidade: sinalização rodoviária (amarelo de faixa sobre azul-tinta), números grandes em condensada. */
+:root {
+  --bg: #eceff3;
+  --surface: #ffffff;
+  --surface-2: #f4f6f9;
+  --ink: #14202e;
+  --muted: #5a6878;
+  --line: #d8dee6;
+  --brand: #1d4a7a;
+  --accent: #f2b705;
+  --accent-ink: #14202e;
+  --good: #1b7f47;
+  --good-bg: #dcf1e5;
+  --info: #1d4a7a;
+  --info-bg: #dde8f4;
+  --bad: #b3372b;
+  --bad-bg: #f8e1de;
+  --none-bg: #e6e9ee;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141c; --surface: #162029; --surface-2: #1d2a36; --ink: #e8edf3; --muted: #93a1b2;
+    --line: #263443; --brand: #74abe2; --accent: #f2b705; --accent-ink: #14202e;
+    --good: #5fcf8f; --good-bg: #17382a; --info: #8dbbea; --info-bg: #1b3350;
+    --bad: #f0877b; --bad-bg: #432421; --none-bg: #232f3b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141c; --surface: #162029; --surface-2: #1d2a36; --ink: #e8edf3; --muted: #93a1b2;
+  --line: #263443; --brand: #74abe2; --accent: #f2b705; --accent-ink: #14202e;
+  --good: #5fcf8f; --good-bg: #17382a; --info: #8dbbea; --info-bg: #1b3350;
+  --bad: #f0877b; --bad-bg: #432421; --none-bg: #232f3b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.4;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 104px; max-width: 560px; margin: 0 auto; -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* cabeçalho */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 4px 16px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mark { width: 40px; height: 40px; border-radius: 10px; background: var(--brand); display: grid; place-items: center; flex: none; }
+.foto { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: none; border: 2px solid var(--accent); }
+.foto-edit { display: flex; align-items: center; gap: 14px; }
+.foto-edit .foto { width: 72px; height: 72px; }
+.foto-edit .mark { width: 72px; height: 72px; }
+.foto-btns { display: grid; gap: 8px; }
+.mark i { display: block; width: 6px; height: 22px; background: var(--accent); border-radius: 2px; transform: skewX(-14deg); box-shadow: 10px 0 0 var(--accent), -10px 0 0 var(--accent); opacity: .95; }
+.brand h1 { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; }
+.brand p { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; flex: none; }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); min-height: 32px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--brand); color: #fff; }
+:root[data-theme="dark"] .seg button[aria-pressed="true"] { color: #0d141c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { color: #0d141c; } }
+
+/* resumo */
+.hero { background: var(--brand); color: #fff; border-radius: 18px; padding: 18px; display: grid; gap: 14px; }
+:root[data-theme="dark"] .hero { background: #1c3a5c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hero { background: #1c3a5c; } }
+.hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.hero .big { font-family: var(--font-display); font-weight: 700; font-size: 64px; line-height: .9; }
+.hero .big small { font-size: 28px; opacity: .75; margin-left: 4px; }
+.hero .lbl { font-size: 14px; opacity: .85; text-align: right; }
+.dots { display: flex; gap: 6px; }
+.dots span { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.25); }
+.dots span.on { background: var(--accent); }
+
+.section-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 22px 2px 10px; }
+.section-h h2 { font-family: var(--font-display); font-size: 20px; letter-spacing: .04em; text-transform: uppercase; font-weight: 700; }
+.section-h span { font-size: 13px; color: var(--muted); }
+
+/* cartões de teste */
+.tests { display: grid; gap: 10px; }
+.test { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; text-align: left; width: 100%; cursor: pointer; }
+.test[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+.t-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.t-name { font-weight: 600; }
+.pill { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { background: var(--good-bg); color: var(--good); }
+.pill.go { background: var(--info-bg); color: var(--info); }
+.pill.no { background: var(--none-bg); color: var(--muted); }
+.t-vals { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.t-last { font-family: var(--font-display); font-weight: 700; font-size: 36px; line-height: 1; }
+.t-last small { font-family: var(--font-body); font-weight: 500; font-size: 13px; color: var(--muted); margin-left: 4px; }
+.t-meta { text-align: right; font-size: 13px; color: var(--muted); }
+.t-meta b { color: var(--ink); font-weight: 600; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
+.bar i { display: block; height: 100%; background: var(--brand); border-radius: 4px; }
+.bar.full i { background: var(--good); }
+.t-foot { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); gap: 8px; }
+.delta.up { color: var(--good); font-weight: 600; }
+.delta.down { color: var(--bad); font-weight: 600; }
+
+/* gráfico */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 0 16px; min-height: 40px; font-weight: 600; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+:root[data-theme="dark"] .chip[aria-pressed="true"] { color: #0d141c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip[aria-pressed="true"] { color: #0d141c; } }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 10px 10px; }
+.chart h3 { font-weight: 600; padding-inline: 6px; }
+.chart .sub { font-size: 13px; color: var(--muted); padding: 0 6px 6px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .axis { fill: var(--muted); font-size: 11px; font-family: var(--font-body); }
+.chart .meta-l { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .meta-t { fill: var(--good); font-size: 11px; font-weight: 600; }
+.chart .ln { stroke: var(--brand); stroke-width: 2.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.chart .area { fill: var(--brand); opacity: .12; }
+.chart .pt { fill: var(--surface); stroke: var(--brand); stroke-width: 2; }
+.chart .pt.last { fill: var(--accent); stroke: var(--brand); }
+.chart .val { fill: var(--ink); font-size: 11px; font-weight: 600; }
+.empty { padding: 24px 12px; text-align: center; color: var(--muted); }
+
+/* formulário */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+.field input, .field select, .field textarea { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-height: 48px; width: 100%; min-width: 0; }
+.field textarea { min-height: 76px; resize: vertical; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.hint { font-size: 12px; color: var(--muted); }
+.btn { border: 0; border-radius: 12px; min-height: 50px; padding: 0 18px; font-weight: 700; font-size: 16px; cursor: pointer; background: var(--accent); color: var(--accent-ink); }
+.btn.sec { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.btn.danger { background: var(--bad-bg); color: var(--bad); }
+.btn-row { display: flex; gap: 10px; }
+.btn-row .btn { flex: 1; }
+.msg { font-size: 14px; padding: 10px 12px; border-radius: 10px; background: var(--info-bg); color: var(--info); }
+.msg.err { background: var(--bad-bg); color: var(--bad); }
+.msg.ok { background: var(--good-bg); color: var(--good); }
+
+/* histórico */
+.list { display: grid; gap: 10px; }
+.sess { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.s-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.s-date { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: .02em; }
+.tag { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); }
+.s-vals { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.s-vals div { background: var(--surface-2); border-radius: 10px; padding: 8px 4px; text-align: center; min-width: 0; }
+.s-vals b { display: block; font-family: var(--font-display); font-size: 19px; line-height: 1.1; }
+.s-vals span { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.s-obs { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+.s-act { display: flex; gap: 8px; }
+.s-act .btn { min-height: 40px; font-size: 14px; flex: 1; }
+
+/* metas */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+td.n { font-variant-numeric: tabular-nums; font-weight: 600; }
+.mi { width: 88px; min-height: 44px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 10px; font-weight: 600; font-variant-numeric: tabular-nums; }
+td.mine, th.mine { background: var(--info-bg); color: var(--info); }
+.note { font-size: 13px; color: var(--muted); padding: 2px; }
+
+/* melhorias */
+.pills { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.pill.pts { background: var(--accent); color: var(--accent-ink); }
+.pill.bad { background: var(--bad-bg); color: var(--bad); }
+.hero-note { font-size: 13px; opacity: .9; }
+.strip { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
+.strip span { font-size: 13px; color: var(--muted); }
+.strip b { font-family: var(--font-display); font-size: 24px; letter-spacing: .02em; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stats div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 6px; text-align: center; }
+.stats b { display: block; font-family: var(--font-display); font-size: 34px; line-height: 1; }
+.stats span { font-size: 12px; color: var(--muted); }
+.extra { display: grid; gap: 4px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+.extra b { color: var(--ink); }
+.cr { margin-bottom: 14px; }
+.cr-time { font-family: var(--font-display); font-weight: 700; font-size: 72px; line-height: 1; text-align: center; letter-spacing: .02em; }
+.chk { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.chk input { width: 20px; height: 20px; flex: none; }
+.seg2 { display: flex; gap: 8px; flex-wrap: wrap; }
+.fxgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.fxi { width: 100%; }
+
+/* barra de abas */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 6px max(10px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)); z-index: 5; }
+.tabs nav { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.tabs button { border: 0; background: none; display: grid; justify-items: center; gap: 3px; padding: 8px 2px; border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--muted); min-height: 54px; cursor: pointer; }
+.tabs button svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tabs button[aria-current="page"] { color: var(--brand); background: var(--info-bg); }
+.sync { font-size: 12px; color: var(--muted); text-align: center; margin-top: 18px; }
+@media (max-width: 380px) { .s-vals b { font-size: 16px; } .hero .big { font-size: 54px; } }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="tabs"><nav id="tabs" aria-label="Seções"></nav></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Metas do edital 2021 (da planilha) ----------
+  var TESTS = [
+    { id: "barra", nome: "Barra fixa", curto: "Barra", dir: 1, dec: 0, m: 3, f: 10, fx: { m: [4, 5, 6, 7, 8, 9], f: [13, 16, 19, 22, 25, 28] },
+      un: function (s) { return s === "f" ? "s" : "rep"; },
+      unLong: "repetições (masc.) / segundos de suspensão (fem.)", obs: "Masculino: repetições. Feminino: suspensão em segundos.", melhor: "Maior" },
+    { id: "shuttle", nome: "Shuttle run", curto: "Shuttle", dir: -1, dec: 2, m: 13.99, f: 15.99, fx: { m: [13.49, 12.99, 12.49, 11.99, 11.49, 10.99], f: [15.49, 14.99, 14.49, 13.99, 13.49, 12.99] },
+      un: function () { return "s"; }, unLong: "segundos", obs: "Tempo de execução.", melhor: "Menor" },
+    { id: "impulsao", nome: "Impulsão horizontal", curto: "Impulsão", dir: 1, dec: 2, m: 2.01, f: 1.61, fx: { m: [2.06, 2.11, 2.16, 2.21, 2.26, 2.31], f: [1.66, 1.71, 1.76, 1.81, 1.86, 1.91] },
+      un: function () { return "m"; }, unLong: "metros", obs: "Distância alcançada.", melhor: "Maior" },
+    { id: "abdominal", nome: "Abdominal", curto: "Abdom.", dir: 1, dec: 0, m: 35, f: 28, fx: { m: [39, 43, 47, 51, 55, 59], f: [31, 34, 37, 40, 43, 46] },
+      un: function () { return "rep"; }, unLong: "repetições", obs: "Execuções válidas em 1 minuto.", melhor: "Maior" },
+    { id: "corrida", nome: "Corrida 12 min", curto: "Corrida", dir: 1, dec: 0, m: 2301, f: 2001, fx: { m: [2401, 2501, 2601, 2701, 2801, 2901], f: [2101, 2201, 2301, 2401, 2501, 2601] },
+      un: function () { return "m"; }, unLong: "metros", obs: "Distância percorrida em 12 minutos.", melhor: "Maior" }
+  ];
+  var TIPOS = ["Treino", "Avaliação", "Simulado"];
+  var SEED = [];
+  var AVISO = "Baseado no edital PRF 2021 (Anexo III). Confira sempre o edital vigente. App independente, sem vínculo com a PRF, que não substitui a orientação de um profissional.";
+
+  // ---------- Estado e armazenamento ----------
+  var state = {
+    tab: "painel", sel: "barra", sessoes: [], editId: null, confirmDel: null, msg: null,
+    perfil: { nome: "", sexo: "m", objetivo: "", inicio: "", configurado: false },
+    storage: "local", ready: false, perfilLoaded: false
+  };
+  var db = null, perfilRef = null, sessCol = null;
+
+  function lsGet(k, fb) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  function loadLocal() {
+    state.storage = "local";
+    state.sessoes = lsGet("taf.sessoes", SEED);
+    state.perfil = lsGet("taf.perfil", state.perfil);
+    state.ready = true;
+    render();
+  }
+
+  function applySnap(snap) {
+    var list = snap.docs.map(function (d) { return Object.assign({}, d.data() || {}, { id: d.id }); });
+    var changed = JSON.stringify(list) !== JSON.stringify(state.sessoes) || state.storage !== "db" || !state.ready;
+    state.sessoes = list; lsSet("taf.sessoes", list); state.storage = "db"; state.ready = true; state.dbMsg = "";
+    if (changed) render();
+  }
+  function applyPerfil(snap) {
+    if (snap.exists) { state.perfil = Object.assign({}, state.perfil, snap.data()); lsSet("taf.perfil", state.perfil); }
+    state.perfilLoaded = true; render();
+  }
+  function watchRemote() {
+    var migrated = false;
+    function applyAny(snap) {
+      if (!migrated) {
+        migrated = true;
+        // registros feitos enquanto o app estava sem conexão com o banco sobem agora
+        if (state.storage === "local") state.sessoes.filter(function (x) { return String(x.id).charAt(0) === "l"; }).forEach(function (x) { var o = Object.assign({}, x); delete o.id; sessCol.doc().set(o); });
+      }
+      applySnap(snap);
+    }
+    // leitura direta: não depende da escuta em tempo real
+    function errTxt(e) { return e ? [e.code, e.message].filter(Boolean).join(" · ") || String(e) : "desconhecido"; }
+    function readNow() {
+      if (!sessCol) return;
+      sessCol.get().then(applyAny).catch(function (e) {
+        if (state.storage !== "db") { state.dbMsg = "Erro ao ler os registros: " + errTxt(e); render(); }
+      });
+      // o perfil é lido à parte: se falhar, os registros continuam funcionando
+      perfilRef.get().then(applyPerfil).catch(function (e) {
+        state.perfilLoaded = true;
+        if (state.storage !== "db") { state.dbMsg = (state.dbMsg ? state.dbMsg + " | " : "") + "Erro ao ler o perfil: " + errTxt(e); render(); }
+      });
+    }
+    try {
+      sessCol.onSnapshot(applyAny, function () {});
+      perfilRef.onSnapshot(applyPerfil, function () { state.perfilLoaded = true; });
+    } catch (e) {}
+    readNow();
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) readNow(); });
+    window.addEventListener("focus", readNow);
+    setInterval(function () { if (!document.hidden) readNow(); }, 20000);
+  }
+  function startRemote(uid) {
+    var base = "data/users/" + uid;
+    perfilRef = db.doc(base + "/perfil");
+    sessCol = db.collection(base + "/perfil/sessoes");
+    watchRemote();
+  }
+
+  function saveSessao(obj, id) {
+    if (state.storage === "db") {
+      var ref = id ? sessCol.doc(id) : sessCol.doc(), rid = ref.id;
+      return ref.set(obj).then(function () {
+        var list = state.sessoes.filter(function (x) { return x.id !== rid; });
+        list.push(Object.assign({ id: rid }, obj)); state.sessoes = list; lsSet("taf.sessoes", list);
+      });
+    }
+    var list = state.sessoes.slice();
+    if (id) { list = list.map(function (s) { return s.id === id ? Object.assign({ id: id }, obj) : s; }); }
+    else { list.push(Object.assign({ id: "l" + Date.now() }, obj)); }
+    state.sessoes = list; lsSet("taf.sessoes", list); return Promise.resolve();
+  }
+  function removeSessao(id) {
+    if (state.storage === "db") return sessCol.doc(id).delete().then(function () {
+      state.sessoes = state.sessoes.filter(function (x) { return x.id !== id; }); lsSet("taf.sessoes", state.sessoes);
+    });
+    state.sessoes = state.sessoes.filter(function (s) { return s.id !== id; });
+    lsSet("taf.sessoes", state.sessoes); return Promise.resolve();
+  }
+  function savePerfil(p) {
+    state.perfil = p;
+    if (state.storage === "db") return perfilRef.set(p);
+    lsSet("taf.perfil", p); return Promise.resolve();
+  }
+
+  // ---------- Utilidades ----------
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function fmt(v, dec) { return v == null ? "–" : Number(v).toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+  function fdate(iso, full) { if (!iso) return ""; var p = iso.split("-"); return full ? p[2] + "/" + p[1] + "/" + p[0] : p[2] + "/" + p[1]; }
+  function today() { try { return new Date().toLocaleDateString("sv-SE"); } catch (e) { return ""; } }
+  function sorted() { return state.sessoes.slice().sort(function (a, b) { return a.data < b.data ? -1 : a.data > b.data ? 1 : 0; }); }
+  function metaDe(t, k) { var o = state.perfil.metas && state.perfil.metas[t.id]; return o && typeof o[k] === "number" ? o[k] : t[k]; }
+  function meta(t) { return metaDe(t, state.perfil.sexo === "f" ? "f" : "m"); }
+  function series(t) { return sorted().filter(function (s) { return typeof s[t.id] === "number"; }).map(function (s) { return { d: s.data, v: s[t.id] }; }); }
+  function info(t) {
+    var sr = series(t), m = meta(t), last = sr.length ? sr[sr.length - 1].v : null, first = sr.length ? sr[0].v : null;
+    var ok = last != null && (t.dir === 1 ? last >= m : last <= m);
+    var prog = last == null ? 0 : Math.max(0, Math.min(1, t.dir === 1 ? last / m : m / last));
+    var delta = sr.length > 1 ? last - first : null;
+    return { sr: sr, m: m, last: last, first: first, ok: ok, prog: prog, delta: delta, pts: pontos(t, last),
+      status: last == null ? "Sem registro" : ok ? "Meta atingida" : "Em evolução",
+      cls: last == null ? "no" : ok ? "ok" : "go" };
+  }
+  function unit(t) { return t.un(state.perfil.sexo); }
+  function metaLabel(t) { var m = meta(t); return (t.dir === 1 ? "≥ " : "≤ ") + fmt(m, t.dec) + " " + unit(t); }
+  function isoOk(s) { return /^\d{4}-\d{2}-\d{2}$/.test(s); }
+
+  // ---------- Melhorias: pontos, prova, frequência, recordes, cronômetro, exportação ----------
+  var dlcap = null;
+  function meets(t, v, thr) { return t.dir === 1 ? v >= thr : v <= thr; }
+  var PTS = [2.5, 3, 3.5, 4, 4.5, 5];
+  function faixa(t, k) { var f = state.perfil.faixasV2, c = f && f[t.id] && f[t.id][k]; return Array.isArray(c) && c.length === 6 ? c : t.fx[k]; }
+  function fp(p) { return fmt(p, p % 1 ? 1 : 0); }
+  function pontos(t, v) {
+    if (v == null) return null;
+    var k = state.perfil.sexo === "f" ? "f" : "m";
+    if (!meets(t, v, t[k])) return { elim: true, p: 0 };
+    var fx = faixa(t, k), p = 2;
+    for (var i = 0; i < 6; i++) if (meets(t, v, fx[i])) p = PTS[i];
+    return { elim: false, p: p };
+  }
+  function ptsPill(I) {
+    if (!I.pts) return "";
+    if (I.pts.elim) return '<span class="pill bad">0 pt · abaixo do mínimo</span>';
+    return '<span class="pill pts">' + fp(I.pts.p) + " pts</span>";
+  }
+  function scoreLine(infos) {
+    var ps = infos.map(function (i) { return i.pts; });
+    if (ps.some(function (x) { return !x; })) return '<p class="hero-note">Os pontos e a média aparecem quando os 5 testes tiverem registro.</p>';
+    var elim = ps.some(function (x) { return x.elim; });
+    var sum = ps.reduce(function (a, x) { return a + x.p; }, 0), avg = sum / 5, ok = !elim && avg >= 3;
+    return '<p class="hero-note"><b>' + fmt(sum, 1) + " de 25 pontos</b> · média " + fmt(avg, 2) + " (pelo último resultado de cada teste) · " + (ok ? "dentro do critério do edital: média ≥ 3,00 e nenhum teste abaixo de 2,00" : elim ? "reprovado: há teste abaixo do mínimo de 2,00" : "média abaixo de 3,00") + "</p>";
+  }
+  function isoOk2(x) { return /^\d{4}-\d{2}-\d{2}$/.test(x || ""); }
+  function daysTo(iso) { var a = new Date(today() + "T12:00:00"), b = new Date(iso + "T12:00:00"); return Math.round((b - a) / 86400000); }
+  function addDays(iso, n) { var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("sv-SE"); }
+  function prova() {
+    var d = state.perfil.prova;
+    if (!isoOk2(d)) return '<div class="strip"><span>Data da prova</span><b>Defina em Metas › Seu perfil</b></div>';
+    var n = daysTo(d);
+    if (n < 0) return '<div class="strip"><span>Data da prova</span><b>' + fdate(d, true) + " já passou</b></div>";
+    return '<div class="strip"><span>Prova em</span><b class="num">' + (n === 0 ? "hoje" : n + (n === 1 ? " dia" : " dias")) + '</b><span class="num">' + fdate(d, true) + "</span></div>";
+  }
+  function freq() {
+    var t = today(), dates = {};
+    state.sessoes.forEach(function (x) { if (x.data && x.data <= t) dates[x.data] = 1; });
+    var back = (new Date(t + "T12:00:00").getDay() + 6) % 7, wk = addDays(t, -back), semana = 0;
+    Object.keys(dates).forEach(function (d) { if (d >= wk) semana++; });
+    var cur = dates[t] ? t : addDays(t, -1), seq = 0;
+    while (dates[cur]) { seq++; cur = addDays(cur, -1); }
+    return '<div class="section-h"><h2>Frequência</h2><span>dias com treino</span></div><div class="stats"><div><b class="num">' + semana + "</b><span>nesta semana</span></div><div><b class=\"num\">" + seq + "</b><span>dias seguidos</span></div><div><b class=\"num\">" + Object.keys(dates).length + "</b><span>no total</span></div></div>";
+  }
+  function extras(t, I) {
+    var out = [];
+    if (I.sr.length) {
+      var b = I.sr[0];
+      I.sr.forEach(function (q) { if (t.dir === 1 ? q.v > b.v : q.v < b.v) b = q; });
+      out.push('Recorde: <b class="num">' + fmt(b.v, t.dec) + " " + unit(t) + "</b> em " + fdate(b.d));
+    }
+    if (I.last != null && !I.ok) {
+      var gap = Math.abs(I.m - I.last), txt = "Falta <b class=\"num\">" + fmt(gap, t.dec) + " " + unit(t) + "</b> " + (t.dir === 1 ? "a mais" : "a menos") + " para a meta";
+      var pv = state.perfil.prova;
+      if (isoOk2(pv)) { var n = daysTo(pv); if (n >= 7) txt += " · ≈ " + fmt(gap / (n / 7), t.dec === 0 ? 1 : t.dec) + " " + unit(t) + " por semana até a prova"; else if (n >= 0) txt += " · prova em " + n + (n === 1 ? " dia" : " dias"); }
+      out.push(txt);
+    }
+    return out.length ? '<div class="extra">' + out.map(function (x) { return "<span>" + x + "</span>"; }).join("") + "</div>" : "";
+  }
+
+  var CRD = { pre: 5, abdominal: 60, corrida: 720 };
+  var CR = { mode: "shuttle", running: false, t0: 0, acc: 0, done: false, timer: null, lock: null, pre: 0, preT0: 0, usePre: true, ac: null, cfg: Object.assign({}, CRD, lsGet("taf.cron", {})), tick: -1 };
+  function crCount() { return CR.mode !== "shuttle"; }
+  function crDur() { var v = Number(CR.cfg[CR.mode]); return (v > 0 ? v : CRD[CR.mode]) * 1000; }
+  function crPreN() { var v = Math.round(Number(CR.cfg.pre)); return v >= 1 && v <= 30 ? v : CRD.pre; }
+  function crNome() { return CR.mode === "abdominal" ? "Abdominal" : CR.mode === "corrida" ? "Corrida" : "Shuttle"; }
+  function crElapsed() { return CR.acc + (CR.running ? Date.now() - CR.t0 : 0); }
+  function crFmt(ms, cs) { var tot = Math.max(0, ms), m = Math.floor(tot / 60000), s2 = Math.floor((tot % 60000) / 1000), c = Math.floor((tot % 1000) / 10); return (m < 10 ? "0" : "") + m + ":" + (s2 < 10 ? "0" : "") + s2 + (cs ? "." + (c < 10 ? "0" : "") + c : ""); }
+  function crShown() { if (CR.pre > 0) return String(CR.pre); return crCount() ? crFmt(Math.ceil((crDur() - crElapsed()) / 1000) * 1000, false) : crFmt(crElapsed(), true); }
+  function crNote() {
+    if (CR.pre > 0) return "Prepare-se. O cronômetro começa no bipe longo.";
+    if (CR.mode === "shuttle") return CR.running ? "Em andamento…" : CR.acc > 0 ? "Tempo copiado para o campo Shuttle abaixo." : "Toque em Iniciar. Ao fim da contagem, comece a correr. Toque em Parar ao terminar.";
+    var mm = crFmt(crDur(), false);
+    if (CR.mode === "abdominal") return CR.running ? "Contagem regressiva de " + mm + "… faça o máximo de repetições completas." : CR.done ? "Tempo esgotado. Anote as repetições no campo Abdominal abaixo." : "Edital: máximo de repetições completas em 1 minuto. Contagem de " + mm + " com bipes nos 3 segundos finais.";
+    return CR.running ? "Contagem regressiva de " + mm + "…" : CR.done ? "Tempo esgotado. Anote os metros percorridos no campo Corrida abaixo." : "Contagem de " + mm + " com aviso no final. Depois informe a distância.";
+  }
+  function crLabel() { return CR.pre > 0 ? "Cancelar" : CR.running ? "Parar" : "Iniciar"; }
+  function crCard() {
+    return '<div class="card cr" id="cr"><div class="field"><label>Cronômetro</label><div class="seg2" role="group" aria-label="Modo do cronômetro"><button type="button" class="chip" data-act="crMode" data-id="shuttle" aria-pressed="' + (CR.mode === "shuttle") + '">Shuttle</button><button type="button" class="chip" data-act="crMode" data-id="abdominal" aria-pressed="' + (CR.mode === "abdominal") + '">Abdominal</button><button type="button" class="chip" data-act="crMode" data-id="corrida" aria-pressed="' + (CR.mode === "corrida") + '">Corrida</button></div></div>' +
+      '<div class="cr-time num" id="cr-time">' + crShown() + '</div><p class="hint" id="cr-note">' + crNote() + '</p>' +
+      '<label class="chk" for="cr-pre"><input type="checkbox" id="cr-pre" data-act="crPre"' + (CR.usePre ? " checked" : "") + '> Contagem inicial com bipes antes de iniciar</label>' +
+      '<div class="field"><label for="cr-cfg-pre">Segundos da contagem inicial</label><input type="number" inputmode="numeric" min="1" max="30" step="1" id="cr-cfg-pre" data-cfg="pre" value="' + crPreN() + '"></div>' +
+      (crCount() ? '<div class="field"><label for="cr-cfg-dur">Duração da prova (segundos)</label><input type="number" inputmode="numeric" min="5" max="3600" step="1" id="cr-cfg-dur" data-cfg="dur" value="' + (crDur() / 1000) + '"><p class="hint">Edital: abdominal 60 s · corrida 720 s (12 min). Pode ajustar para treinar.</p></div><button type="button" class="btn sec" data-act="crDefault" style="min-height:40px;font-size:14px;margin-bottom:12px">Voltar ao tempo do edital</button>' : "") +
+      '<div class="btn-row"><button type="button" class="btn sec" data-act="crReset">Zerar</button><button type="button" class="btn" id="cr-btn" data-act="crToggle">' + crLabel() + "</button></div></div>";
+  }
+  function crUpdate() {
+    var el = document.getElementById("cr-time"); if (!el) return;
+    el.textContent = crShown();
+    var b = document.getElementById("cr-btn"); if (b) b.textContent = crLabel();
+    var n = document.getElementById("cr-note"); if (n) n.textContent = crNote();
+  }
+  function crTone(freq, ms) {
+    try {
+      if (!CR.ac) { var AC = window.AudioContext || window.webkitAudioContext; CR.ac = new AC(); }
+      if (CR.ac.state === "suspended") CR.ac.resume();
+      var o = CR.ac.createOscillator(), g = CR.ac.createGain(), t = CR.ac.currentTime;
+      o.frequency.value = freq; g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + ms / 1000);
+      o.connect(g); g.connect(CR.ac.destination); o.start(t); o.stop(t + ms / 1000 + 0.02);
+    } catch (e) {}
+  }
+  function crBeep() {
+    [0, 350, 700].forEach(function (d) { setTimeout(function () { crTone(880, 200); }, d); });
+    try { if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]); } catch (e) {}
+  }
+  function crRelease() { clearInterval(CR.timer); CR.timer = null; try { if (CR.lock) { CR.lock.release(); CR.lock = null; } } catch (e) {} }
+  function crStop(finished) {
+    CR.acc = finished ? crDur() : crElapsed(); CR.running = false; crRelease();
+    if (CR.mode === "shuttle") { var inp = document.getElementById("f-shuttle"); if (inp && CR.acc > 0) inp.value = (CR.acc / 1000).toFixed(2).replace(".", ","); }
+    if (finished) { CR.done = true; crBeep(); }
+    crUpdate();
+  }
+  function crBegin() {
+    CR.pre = 0; CR.running = true; CR.t0 = Date.now(); CR.tick = -1; clearInterval(CR.timer);
+    CR.timer = setInterval(function () { if (crCount() && crElapsed() >= crDur()) return crStop(true); if (crCount() && crDur() > 10000) { var rest = Math.ceil((crDur() - crElapsed()) / 1000); if (rest <= 3 && rest >= 1 && rest !== CR.tick) { CR.tick = rest; crTone(660, 150); } } crUpdate(); }, 100);
+    crUpdate();
+  }
+  function crToggle() {
+    if (CR.pre > 0) return crReset();
+    if (CR.running) return crStop(false);
+    if (crCount() && CR.acc >= crDur()) { CR.acc = 0; CR.done = false; }
+    try { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (l) { CR.lock = l; }).catch(function () {}); } catch (e) {}
+    if (!CR.usePre) { crTone(1040, 500); return crBegin(); }
+    var N = crPreN(); CR.pre = N; CR.preT0 = Date.now(); var last = N; crTone(660, 180); crUpdate(); clearInterval(CR.timer);
+    CR.timer = setInterval(function () {
+      var n = N - Math.floor((Date.now() - CR.preT0) / 1000);
+      if (n <= 0) { crTone(1040, 600); try { if (navigator.vibrate) navigator.vibrate(200); } catch (e) {} return crBegin(); }
+      if (n !== last) { last = n; CR.pre = n; crTone(660, 180); }
+      crUpdate();
+    }, 50);
+  }
+  function crReset() { CR.running = false; CR.pre = 0; CR.acc = 0; CR.done = false; crRelease(); crUpdate(); }
+
+  function exportBar() {
+    var h = "";
+    h += '<div class="btn-row" style="margin-bottom:12px">' + (state.sessoes.length ? '<button type="button" class="btn sec" data-act="export">Exportar CSV</button>' : "") +
+      '<label class="btn sec" for="imp" style="cursor:pointer">Importar CSV</label><input id="imp" type="file" accept=".csv,text/csv,text/plain,application/vnd.ms-excel" style="position:absolute;opacity:0;width:1px;height:1px"></div>';
+    if (state.msg && state.msg.w === "hist") h += '<p class="msg ' + state.msg.k + '" role="status" style="margin-bottom:12px">' + esc(state.msg.t) + "</p>";
+    return h;
+  }
+  function csvCell(v) {
+    if (v == null) return "";
+    var x = typeof v === "number" ? String(v).replace(".", ",") : String(v);
+    if (typeof v === "string" && /^[=+\-@\t\r]/.test(x)) x = "'" + x;
+    return /[;"\n\r]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x;
+  }
+  function mensagem(k, t) { state.msg = { k: k, t: t, w: "hist" }; state.skipRender = false; render(); }
+  function baixar(nome, texto) {
+    var blob = new Blob([texto], { type: "text/csv;charset=utf-8" }), file = null;
+    try { file = new File([blob], nome, { type: "text/csv" }); } catch (e) {}
+    var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (ios && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      return navigator.share({ files: [file], title: nome }).then(function () { mensagem("ok", "Planilha pronta. Salve em Arquivos ou envie para você mesmo."); })
+        .catch(function (e) { if (!e || e.name !== "AbortError") mensagem("err", "Não foi possível exportar a planilha."); });
+    }
+    try {
+      var a = document.createElement("a"), url = URL.createObjectURL(blob);
+      a.href = url; a.download = nome; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
+      mensagem("ok", "Planilha baixada. Procure em Downloads.");
+    } catch (e) { mensagem("err", "Não foi possível exportar a planilha."); }
+  }
+  function exportCsv() {
+    var cols = [["Data", function (r) { return fdate(r.data, true); }], ["Tipo", "tipo"], ["Barra fixa", "barra"], ["Shuttle (s)", "shuttle"], ["Impulsão (m)", "impulsao"], ["Abdominal", "abdominal"], ["Corrida (m)", "corrida"], ["Observações", "obs"]];
+    var lines = [cols.map(function (c) { return c[0]; }).join(";")];
+    sorted().forEach(function (r) { lines.push(cols.map(function (c) { return csvCell(typeof c[1] === "function" ? c[1](r) : r[c[1]]); }).join(";")); });
+    baixar("taf-prf-registros.csv", "\uFEFF" + lines.join("\r\n"));
+  }
+  function parseCsv(text) {
+    text = text.replace(/^\uFEFF/, "");
+    var delim = (text.split("\n")[0].split(";").length >= text.split("\n")[0].split(",").length) ? ";" : ",";
+    var rows = [], row = [], cell = "", q = false, i, c;
+    for (i = 0; i < text.length; i++) {
+      c = text.charAt(i);
+      if (q) { if (c === '"') { if (text.charAt(i + 1) === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+      else if (c === '"') q = true;
+      else if (c === delim) { row.push(cell); cell = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && text.charAt(i + 1) === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+      else cell += c;
+    }
+    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function importText(text) {
+    var rows = parseCsv(text).filter(function (r) { return r.some(function (x) { return String(x).trim() !== ""; }); });
+    if (rows.length < 2 || String(rows[0][0]).trim().toLowerCase() !== "data" || rows[0].length < 7) return mensagem("err", "Arquivo não reconhecido. Use um CSV exportado por este app.");
+    var ids = ["barra", "shuttle", "impulsao", "abdominal", "corrida"], novos = [], dup = 0, ruim = 0;
+    var key = function (o) { return JSON.stringify([o.data, o.tipo, o.barra, o.shuttle, o.impulsao, o.abdominal, o.corrida, o.obs || ""]); };
+    var have = {}; state.sessoes.forEach(function (x) { have[key(x)] = 1; });
+    rows.slice(1).forEach(function (r, n) {
+      var d = String(r[0]).trim(), m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d), iso = m ? m[3] + "-" + m[2] + "-" + m[1] : d;
+      if (!isoOk(iso)) { ruim++; return; }
+      var o = { data: iso, tipo: String(r[1] || "").trim() || "Treino", obs: String(r[7] || "").replace(/^'(?=[=+\-@\t\r])/, "").trim() }, any = false, bad = false;
+      ids.forEach(function (id, k) {
+        var raw = String(r[2 + k] == null ? "" : r[2 + k]).trim().replace(",", ".");
+        if (raw === "") { o[id] = null; return; }
+        var v = Number(raw); if (!isFinite(v) || v <= 0) { bad = true; return; }
+        o[id] = v; any = true;
+      });
+      if (bad || !any) { ruim++; return; }
+      var kk = key(o); if (have[kk]) { dup++; return; }
+      have[kk] = 1; o.id = "l" + Date.now() + "_" + n; novos.push(o);
+    });
+    if (novos.length) { state.sessoes = state.sessoes.concat(novos); lsSet("taf.sessoes", state.sessoes); }
+    mensagem(novos.length ? "ok" : "err", novos.length + (novos.length === 1 ? " registro importado" : " registros importados") + (dup ? ". " + dup + " já existiam e foram ignorados" : "") + (ruim ? ". " + ruim + " linhas inválidas ignoradas" : "") + ".");
+  }
+  function importFile(file) {
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onerror = function () { mensagem("err", "Não foi possível ler o arquivo."); };
+    fr.onload = function () { importText(String(fr.result)); };
+    fr.readAsText(file, "utf-8");
+  }
+
+  function faixasForm() {
+    var k = state.perfil.sexo === "f" ? "f" : "m", lab = k === "f" ? "feminino" : "masculino";
+    var h = '<div class="section-h"><h2>Faixas de pontos</h2><span>' + lab + '</span></div><form id="faixasForm" novalidate>';
+    TESTS.forEach(function (t) {
+      var fx = faixa(t, k);
+      h += '<div class="card" style="margin-bottom:10px"><div><b>' + t.nome + '</b><div class="hint">2 pts = mínimo do edital: ' + (t.dir === 1 ? "≥ " : "≤ ") + fmt(t[k], t.dec) + " " + unit(t) + '</div></div><div class="fxgrid">' +
+        PTS.map(function (p, i) {
+          return '<div class="field"><label for="fx-' + i + "-" + t.id + '">' + fp(p) + ' pts</label><input class="mi fxi" id="fx-' + i + "-" + t.id + '" inputmode="decimal" autocomplete="off" value="' + esc(String(fx[i]).replace(".", ",")) + '"></div>';
+        }).join("") + "</div></div>";
+    });
+    if (state.msg && state.msg.w === "faixas") h += '<p class="msg ' + state.msg.k + '" role="status" style="margin-bottom:12px">' + esc(state.msg.t) + "</p>";
+    h += '<div class="btn-row"><button type="button" class="btn sec" data-act="resetFaixas">Voltar ao edital 2021</button><button type="submit" class="btn">Salvar faixas</button></div></form>' +
+      '<p class="note" style="margin-top:10px">Valores do edital PRF 2021 (Anexo III, item 3). Cada campo é o resultado mínimo para ganhar aquela pontuação. No shuttle, tempo menor vale mais. Aprovação: no mínimo 2,00 em cada teste e média 3,00. Edite se um novo edital mudar a tabela. As faixas valem para o sexo escolhido no topo.</p>';
+    return h;
+  }
+
+  // ---------- Telas ----------
+  function header() {
+    var p = state.perfil;
+    return '<header class="top"><div class="brand">' + (p.foto ? '<img class="foto" alt="Sua foto" src="' + esc(p.foto) + '">' : '<div class="mark" aria-hidden="true"><i></i></div>') + '<div style="min-width:0"><h1>TAF PRF</h1><p>' +
+      esc([p.nome || "Candidato", p.objetivo].filter(Boolean).join(" · ")) + '</p></div></div>' +
+      '<div class="seg" role="group" aria-label="Sexo para as metas"><button data-act="sexo" data-v="m" aria-pressed="' + (p.sexo !== "f") + '">Masc.</button><button data-act="sexo" data-v="f" aria-pressed="' + (p.sexo === "f") + '">Fem.</button></div></header>';
+  }
+
+  function chartSvg(t) {
+    var I = info(t), sr = I.sr;
+    if (!sr.length) return '<div class="empty">Ainda não há registros de ' + esc(t.nome.toLowerCase()) + '. Lance um resultado na aba Registrar.</div>';
+    var W = 340, H = 190, L = 40, R = 14, T = 16, B = 28, pw = W - L - R, ph = H - T - B;
+    var vals = sr.map(function (p) { return p.v; }).concat([I.m]);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var pad = (hi - lo) * 0.18 || Math.abs(hi) * 0.1 || 1; lo -= pad; hi += pad;
+    function X(i) { return sr.length === 1 ? L + pw / 2 : L + (pw * i) / (sr.length - 1); }
+    function Y(v) { return T + ph - ((v - lo) / (hi - lo)) * ph; }
+    var out = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Evolução em ' + esc(t.nome) + '">';
+    for (var g = 0; g <= 3; g++) {
+      var gv = lo + ((hi - lo) * g) / 3, gy = Y(gv);
+      out += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + gy + '" y2="' + gy + '"/><text class="axis" x="' + (L - 6) + '" y="' + (gy + 4) + '" text-anchor="end">' + fmt(gv, t.dec === 0 && (hi - lo) < 6 ? 1 : t.dec) + "</text>";
+    }
+    var my = Y(I.m);
+    out += '<line class="meta-l" x1="' + L + '" x2="' + (W - R) + '" y1="' + my + '" y2="' + my + '"/><text class="meta-t" x="' + (W - R) + '" y="' + (my - 5) + '" text-anchor="end">meta ' + fmt(I.m, t.dec) + "</text>";
+    var pts = sr.map(function (p, i) { return X(i) + "," + Y(p.v); });
+    if (sr.length > 1) {
+      out += '<polygon class="area" points="' + X(0) + "," + (T + ph) + " " + pts.join(" ") + " " + X(sr.length - 1) + "," + (T + ph) + '"/><polyline class="ln" points="' + pts.join(" ") + '"/>';
+    }
+    sr.forEach(function (p, i) {
+      var last = i === sr.length - 1;
+      out += '<circle class="pt' + (last ? " last" : "") + '" cx="' + X(i) + '" cy="' + Y(p.v) + '" r="' + (last ? 6 : 4.5) + '"/>';
+      if (sr.length <= 8 || last) out += '<text class="val" x="' + X(i) + '" y="' + (Y(p.v) + (p.v >= I.m === (t.dir === 1) ? -11 : 18)) + '" text-anchor="middle">' + fmt(p.v, t.dec) + "</text>";
+      if (sr.length <= 7 || i === 0 || last || i % Math.ceil(sr.length / 5) === 0) out += '<text class="axis" x="' + X(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + fdate(p.d) + "</text>";
+    });
+    return out + "</svg>";
+  }
+
+  function syncExtra() {
+    if (state.storage === "db") return "";
+    return (state.dbMsg ? "<br>" + esc(state.dbMsg) : "") + '<br><button type="button" class="btn sec" data-act="retryDb" style="margin-top:8px;min-height:40px;font-size:14px">Tentar conectar de novo</button>';
+  }
+
+  function onboarding() {
+    return '<header class="top"><div class="brand"><div class="mark" aria-hidden="true"><i></i></div><div><h1>TAF PRF</h1><p>Seu acompanhamento</p></div></div></header>' +
+      '<div class="section-h"><h2>Bem-vindo</h2></div><form class="card" id="onb" novalidate><p>Registre seus treinos e veja a evolução em cada teste contra as metas do edital. Seus registros são só seus e ficam guardados neste aparelho.</p><p class="hint">' + AVISO + '</p>' +
+      '<div class="field"><label for="o-nome">Seu nome</label><input id="o-nome" autocomplete="given-name" placeholder="Como quer ser chamado"></div>' +
+      '<div class="field"><label for="o-sexo">Metas do edital para</label><select id="o-sexo"><option value="m">Masculino</option><option value="f">Feminino</option></select></div>' +
+      '<div class="field"><label for="o-obj">Objetivo (opcional)</label><input id="o-obj" placeholder="Ex.: passar no TAF da PRF"></div>' +
+      (state.msg && state.msg.w === "onb" ? '<p class="msg err" role="status">' + esc(state.msg.t) + "</p>" : "") +
+      '<button class="btn" type="submit">Começar</button></form>';
+  }
+
+  function painel() {
+    var infos = TESTS.map(info), ok = infos.filter(function (i) { return i.ok; }).length;
+    var n = state.sessoes.length, ult = sorted().slice(-1)[0];
+    var h = header();
+    h += '<section class="hero" aria-label="Resumo"><div class="hero-row"><div class="big num">' + ok + "<small>/ " + TESTS.length + '</small></div><div class="lbl">metas mínimas<br>atingidas</div></div><div class="dots">' +
+      infos.map(function (i) { return '<span class="' + (i.ok ? "on" : "") + '"></span>'; }).join("") + '</div>' +
+      '<p style="font-size:13px;opacity:.85">' + (n ? n + (n === 1 ? " registro" : " registros") + " · último em " + fdate(ult.data, true) : "Nenhum registro ainda") + "</p>" + scoreLine(infos) + "</section>";
+    h += prova() + freq() + '<div class="section-h"><h2>Modalidades</h2><span>toque para ver o gráfico</span></div><div class="tests">';
+    TESTS.forEach(function (t, k) {
+      var I = infos[k], dl = "";
+      if (I.delta != null) {
+        var good = t.dir * I.delta > 0, same = I.delta === 0;
+        dl = '<span class="delta ' + (same ? "" : good ? "up" : "down") + '">' + (same ? "sem mudança" : (I.delta > 0 ? "+" : "−") + fmt(Math.abs(I.delta), t.dec) + " " + unit(t) + " desde o 1º") + "</span>";
+      } else dl = "<span>Evolução aparece com 2 registros</span>";
+      h += '<button class="test" data-act="sel" data-id="' + t.id + '" aria-pressed="' + (state.sel === t.id) + '"><div class="t-head"><span class="t-name">' + t.nome + '</span><span class="pills"><span class="pill ' + I.cls + '">' + I.status + '</span>' + ptsPill(I) + '</span></div>' +
+        '<div class="t-vals"><div class="t-last num">' + fmt(I.last, t.dec) + "<small>" + (I.last == null ? "" : unit(t)) + '</small></div><div class="t-meta">meta mínima<br><b class="num">' + metaLabel(t) + "</b></div></div>" +
+        '<div class="bar' + (I.ok ? " full" : "") + '"><i style="width:' + Math.round(I.prog * 100) + '%"></i></div><div class="t-foot">' + dl + '<span class="num">' + Math.round(I.prog * 100) + "%</span></div>" + extras(t, I) + "</button>";
+    });
+    h += "</div>";
+    var st = TESTS.filter(function (t) { return t.id === state.sel; })[0] || TESTS[0];
+    h += '<div class="section-h"><h2>Evolução</h2><span>escolha o teste</span></div><div class="chips" role="group" aria-label="Teste do gráfico">' +
+      TESTS.map(function (t) { return '<button class="chip" data-act="sel" data-id="' + t.id + '" aria-pressed="' + (t.id === st.id) + '">' + t.curto + "</button>"; }).join("") + '</div><div class="chart"><h3>' + st.nome + '</h3><p class="sub">' + (st.dir === 1 ? "Quanto maior, melhor" : "Quanto menor, melhor") + " · linha tracejada é a meta mínima</p>" + chartSvg(st) + "</div>";
+    h += '<p class="sync">' + "Seus registros ficam só neste aparelho. Exporte o CSV de vez em quando, como cópia.<br>" + AVISO + "</p>";
+    return h;
+  }
+
+  function registrar() {
+    var e = state.editId ? state.sessoes.filter(function (s) { return s.id === state.editId; })[0] : null;
+    e = e || { data: today(), tipo: "Treino" };
+    function inp(t, ph) {
+      return '<div class="field"><label for="f-' + t.id + '">' + t.nome + " (" + unit(t) + ')</label><input id="f-' + t.id + '" inputmode="decimal" autocomplete="off" placeholder="' + ph + '" value="' + (typeof e[t.id] === "number" ? esc(String(e[t.id]).replace(".", ",")) : "") + '"></div>';
+    }
+    var h = header() + '<div class="section-h"><h2>' + (state.editId ? "Editar registro" : "Novo registro") + "</h2></div>";
+    if (state.msg) h += '<p class="msg ' + state.msg.k + '" role="status" style="margin-bottom:12px">' + esc(state.msg.t) + "</p>";
+    h += crCard() + '<form class="card" id="form" novalidate><div class="grid2"><div class="field"><label for="f-data">Data</label><input id="f-data" type="date" value="' + esc(e.data) + '"></div>' +
+      '<div class="field"><label for="f-tipo">Tipo de treino</label><select id="f-tipo">' + TIPOS.map(function (x) { return "<option" + (x === e.tipo ? " selected" : "") + ">" + x + "</option>"; }).join("") + "</select></div></div>" +
+      '<p class="hint">Preencha só os testes feitos neste dia. Não use zero para teste não realizado.</p>' +
+      '<div class="grid2">' + inp(TESTS[0], "0") + inp(TESTS[1], "0,00") + inp(TESTS[2], "0,00") + inp(TESTS[3], "0") + "</div>" + inp(TESTS[4], "0") +
+      '<div class="field"><label for="f-obs">Observações</label><textarea id="f-obs" placeholder="Como foi o treino, condições, dores…">' + esc(e.obs || "") + "</textarea></div>" +
+      '<div class="btn-row">' + (state.editId ? '<button type="button" class="btn sec" data-act="cancelEdit">Cancelar</button>' : "") + '<button type="submit" class="btn">' + (state.editId ? "Salvar alterações" : "Salvar registro") + "</button></div></form>";
+    return h;
+  }
+
+  function historico() {
+    var list = sorted().reverse(), h = header() + '<div class="section-h"><h2>Histórico</h2><span>' + list.length + (list.length === 1 ? " registro" : " registros") + "</span></div>"; h += exportBar();
+    if (!list.length) return h + '<div class="card empty">Nenhum registro ainda. Use a aba Registrar para lançar seu primeiro treino.</div>';
+    h += '<div class="list">';
+    list.forEach(function (s) {
+      var del = state.confirmDel === s.id;
+      h += '<article class="sess"><div class="s-head"><span class="s-date num">' + fdate(s.data, true) + '</span><span class="tag">' + esc(s.tipo || "Treino") + "</span></div><div class=\"s-vals\">" +
+        TESTS.map(function (t) { return "<div><b class=\"num\">" + fmt(typeof s[t.id] === "number" ? s[t.id] : null, t.dec) + "</b><span>" + t.curto + "</span></div>"; }).join("") + "</div>" +
+        (s.obs ? '<p class="s-obs">' + esc(s.obs) + "</p>" : "") +
+        '<div class="s-act"><button class="btn sec" data-act="edit" data-id="' + s.id + '">Editar</button><button class="btn ' + (del ? "danger" : "sec") + '" data-act="' + (del ? "del" : "askDel") + '" data-id="' + s.id + '">' + (del ? "Confirmar exclusão" : "Excluir") + "</button></div></article>";
+    });
+    return h + "</div>";
+  }
+
+  function metas() {
+    var p = state.perfil, fem = p.sexo === "f", custom = false;
+    function cell(t, k) {
+      var v = metaDe(t, k), alt = v !== t[k]; if (alt) custom = true;
+      return '<td class="' + ((k === "f") === fem ? "mine" : "") + '"><input class="mi" id="m-' + k + "-" + t.id + '" inputmode="decimal" autocomplete="off" aria-label="Meta ' + (k === "f" ? "feminina" : "masculina") + " de " + t.nome + '" value="' + esc(String(v).replace(".", ",")) + '">' +
+        (alt ? '<div class="hint">edital: ' + fmt(t[k], t.dec) + "</div>" : "") + "</td>";
+    }
+    var h = header() + '<div class="section-h"><h2>Metas mínimas</h2><span>editáveis</span></div><form id="metasForm" novalidate><div class="table-wrap"><table><thead><tr><th>Teste</th><th class="' + (!fem ? "mine" : "") + '">Masc.</th><th class="' + (fem ? "mine" : "") + '">Fem.</th></tr></thead><tbody>';
+    TESTS.forEach(function (t) {
+      h += "<tr><td>" + t.nome + '<div class="hint">' + (t.dir === 1 ? "maior é melhor" : "menor é melhor") + " · " + t.unLong + "</div></td>" + cell(t, "m") + cell(t, "f") + "</tr>";
+    });
+    h += '</tbody></table></div>';
+    if (state.msg && state.msg.w === "metas") h += '<p class="msg ' + state.msg.k + '" role="status" style="margin-top:12px">' + esc(state.msg.t) + "</p>";
+    h += '<div class="btn-row" style="margin-top:12px"><button type="button" class="btn sec" data-act="resetMetas">Voltar ao edital 2021</button><button type="submit" class="btn">Salvar metas</button></div></form>' +
+      '<p class="note" style="margin-top:10px">Os valores iniciais são do edital 2021. Edite o que quiser, em Masc. e Fem., e salve. O Painel e os gráficos passam a usar suas metas. Confirme o protocolo oficial antes da prova e siga a orientação de um profissional.</p>';
+    h += faixasForm();
+    h += '<div class="section-h"><h2>Seu perfil</h2></div><form class="card" id="perfil" novalidate>' +
+      '<div class="field"><label>Foto</label><div class="foto-edit">' + (p.foto ? '<img class="foto" alt="Sua foto" src="' + esc(p.foto) + '">' : '<div class="mark" aria-hidden="true"><i></i></div>') +
+      '<div class="foto-btns"><label class="btn sec" for="p-foto" style="min-height:44px;font-size:14px;cursor:pointer">' + (p.foto ? "Trocar foto" : "Escolher foto") + '</label><input id="p-foto" type="file" accept="image/*" style="position:absolute;opacity:0;width:1px;height:1px">' +
+      (p.foto ? '<button type="button" class="btn sec" data-act="fotoDel" style="min-height:44px;font-size:14px">Remover foto</button>' : "") + '</div></div>' +
+      (state.msg && state.msg.w === "foto" ? '<p class="msg ' + state.msg.k + '" role="status">' + esc(state.msg.t) + "</p>" : "") + '</div>' +
+      '<div class="field"><label for="p-nome">Candidato</label><input id="p-nome" value="' + esc(p.nome) + '" autocomplete="off"></div>' +
+      '<div class="field"><label for="p-obj">Objetivo</label><input id="p-obj" value="' + esc(p.objetivo) + '" autocomplete="off"></div>' +
+      '<div class="field"><label for="p-ini">Início do acompanhamento</label><input id="p-ini" type="date" value="' + esc(p.inicio) + '"></div>' +
+      '<div class="field"><label for="p-prova">Data da prova (TAF)</label><input id="p-prova" type="date" value="' + esc(p.prova || "") + '"></div>' +
+      '<p class="hint">O sexo escolhido no topo define quais metas são usadas no Painel.</p>' +
+      (state.msg && state.msg.w === "perfil" ? '<p class="msg ' + state.msg.k + '" role="status">' + esc(state.msg.t) + "</p>" : "") +
+      '<button class="btn" type="submit">Salvar perfil</button></form>' +
+      '<div class="section-h"><h2>Instalar no celular</h2></div><div class="card"><p><b>Android (Chrome):</b> menu ⋮ › Instalar app (ou Adicionar à tela inicial).</p><p style="margin-top:8px"><b>iPhone (Safari):</b> botão Compartilhar › Adicionar à Tela de Início.</p><p class="hint" style="margin-top:8px">Depois de instalado, abre direto, como um app. Os dados ficam só neste aparelho: use Exportar CSV no Histórico para guardar uma cópia.</p></div>';
+    return h;
+  }
+
+  var ICON = {
+    painel: '<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+    registrar: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+    historico: '<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>',
+    metas: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>'
+  };
+  var NAMES = { painel: "Painel", registrar: "Registrar", historico: "Histórico", metas: "Metas" };
+
+  function render() {
+    var app = document.getElementById("app"), y = window.scrollY;
+    var focusId = document.activeElement && document.activeElement.id;
+    var body = state.tab === "painel" ? painel() : state.tab === "registrar" ? registrar() : state.tab === "historico" ? historico() : metas();
+    var loading = !state.ready || (state.storage === "db" && !state.perfilLoaded);
+    var onb = !loading && !state.perfil.configurado;
+    if (loading) body = header() + '<div class="card empty">Carregando seus registros…</div>';
+    else if (onb) body = onboarding();
+    // não reconstrói formulários enquanto a pessoa digita
+    var typing = document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && (state.tab === "registrar" || state.tab === "metas") && app.firstChild && state.lastTab === state.tab && state.skipRender;
+    if (typing) return;
+    app.innerHTML = body;
+    state.lastTab = state.tab;
+    crUpdate();
+    document.getElementById("tabs").innerHTML = onb ? "" : Object.keys(NAMES).map(function (k) {
+      return '<button data-act="tab" data-id="' + k + '"' + (state.tab === k ? ' aria-current="page"' : "") + ">" + ICON[k] + "<span>" + NAMES[k] + "</span></button>";
+    }).join("");
+    if (focusId) { var f = document.getElementById(focusId); if (f && f.focus) try { f.focus(); } catch (e) {} }
+    window.scrollTo(0, y);
+  }
+
+  // ---------- Eventos ----------
+  document.addEventListener("focusin", function (ev) { state.skipRender = /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName); });
+  document.addEventListener("focusout", function () { state.skipRender = false; });
+
+  function go(tab) { state.tab = tab; state.msg = null; state.confirmDel = null; if (tab !== "registrar") state.editId = null; state.skipRender = false; render(); window.scrollTo(0, 0); }
+
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-act]"); if (!b) return;
+    var a = b.dataset.act, id = b.dataset.id;
+    if (a === "tab") return go(id);
+    if (a === "sel") { state.sel = id; return render(); }
+    if (a === "sexo") { var p = Object.assign({}, state.perfil, { sexo: b.dataset.v }); savePerfil(p); return render(); }
+    if (a === "edit") { state.editId = id; state.tab = "registrar"; state.msg = null; state.skipRender = false; render(); return window.scrollTo(0, 0); }
+    if (a === "cancelEdit") return go("historico");
+    if (a === "retryDb") { state.dbMsg = "Conectando à sua conta…"; render(); connectDb(); return dbWatchdog(); }
+    if (a === "crMode") { if (CR.running || CR.pre > 0) return; CR.mode = id; CR.acc = 0; CR.done = false; return render(); }
+    if (a === "crPre") { CR.usePre = b.checked; return; }
+    if (a === "crDefault") { if (CR.running || CR.pre > 0) return; CR.cfg[CR.mode] = CRD[CR.mode]; lsSet("taf.cron", CR.cfg); CR.acc = 0; CR.done = false; return render(); }
+    if (a === "fotoDel") { var q = Object.assign({}, state.perfil); delete q.foto; state.msg = null; savePerfil(q).then(render); return render(); }
+    if (a === "crToggle") return crToggle();
+    if (a === "crReset") return crReset();
+    if (a === "export") return exportCsv();
+    if (a === "resetFaixas") { savePerfil(Object.assign({}, state.perfil, { faixasV2: {} })).then(function () { state.msg = { k: "ok", t: "Faixas do edital 2021 restauradas.", w: "faixas" }; render(); }); return; }
+    if (a === "resetMetas") { savePerfil(Object.assign({}, state.perfil, { metas: {} })).then(function () { state.msg = { k: "ok", t: "Metas do edital 2021 restauradas.", w: "metas" }; render(); }); return; }
+    if (a === "askDel") { state.confirmDel = id; return render(); }
+    if (a === "del") { state.confirmDel = null; removeSessao(id).then(render); return render(); }
+  });
+
+  function fotoErro(t) { state.msg = { k: "err", t: t, w: "foto" }; state.skipRender = false; render(); }
+  function fotoLer(file) {
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onerror = function () { fotoErro("Não foi possível ler a imagem."); };
+    fr.onload = function () {
+      var im = new Image();
+      im.onerror = function () { fotoErro("Esse arquivo não é uma imagem válida."); };
+      im.onload = function () {
+        try {
+          var S = 192, w = im.naturalWidth, h = im.naturalHeight, m = Math.min(w, h), c = document.createElement("canvas");
+          c.width = S; c.height = S;
+          c.getContext("2d").drawImage(im, (w - m) / 2, (h - m) / 2, m, m, 0, 0, S, S);
+          var url = c.toDataURL("image/jpeg", 0.82);
+          state.msg = { k: "ok", t: "Foto salva.", w: "foto" }; state.skipRender = false;
+          savePerfil(Object.assign({}, state.perfil, { foto: url })).then(render).catch(function () { fotoErro("Não foi possível salvar a foto."); });
+        } catch (e) { fotoErro("Não foi possível processar a imagem."); }
+      };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
+  document.addEventListener("change", function (ev) {
+    if (ev.target.id === "imp") { var f0 = ev.target.files && ev.target.files[0]; ev.target.value = ""; return importFile(f0); }
+    if (ev.target.id === "p-foto") return fotoLer(ev.target.files && ev.target.files[0]);
+    var el = ev.target, k = el.dataset && el.dataset.cfg; if (!k) return;
+    var n = Math.round(Number(String(el.value).replace(",", "."))), key = k === "pre" ? "pre" : CR.mode;
+    var lo = k === "pre" ? 1 : 5, hi = k === "pre" ? 30 : 3600;
+    if (CR.running || CR.pre > 0) { el.value = k === "pre" ? crPreN() : crDur() / 1000; return; }
+    if (!isFinite(n) || n < lo) n = lo; if (n > hi) n = hi;
+    CR.cfg[key] = n; el.value = n; lsSet("taf.cron", CR.cfg);
+    if (k !== "pre") { CR.acc = 0; CR.done = false; }
+    crUpdate();
+  });
+
+  document.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (ev.target.id === "form") {
+      var data = document.getElementById("f-data").value, o = { data: data, tipo: document.getElementById("f-tipo").value, obs: document.getElementById("f-obs").value.trim() }, any = false, bad = null;
+      TESTS.forEach(function (t) {
+        var raw = document.getElementById("f-" + t.id).value.trim().replace(",", ".");
+        if (raw === "") { o[t.id] = null; return; }
+        var n = Number(raw);
+        if (!isFinite(n) || n <= 0) { bad = t.nome; return; }
+        o[t.id] = n; any = true;
+      });
+      state.skipRender = false;
+      if (!isoOk(data)) { state.msg = { k: "err", t: "Escolha a data do treino." }; return render(); }
+      if (bad) { state.msg = { k: "err", t: "Valor inválido em " + bad + ". Use um número maior que zero ou deixe em branco." }; return render(); }
+      if (!any) { state.msg = { k: "err", t: "Preencha pelo menos um teste." }; return render(); }
+      var wasEdit = state.editId;
+      saveSessao(o, state.editId).then(function () {
+        state.editId = null; state.msg = { k: "ok", t: wasEdit ? "Registro atualizado." : "Registro salvo. O Painel já mostra o novo resultado." };
+        state.tab = wasEdit ? "historico" : "registrar"; if (wasEdit) state.msg = null; render(); window.scrollTo(0, 0);
+      }).catch(function () { state.msg = { k: "err", t: "Não foi possível salvar. Tente de novo." }; render(); });
+    }
+    if (ev.target.id === "metasForm") {
+      var metasObj = {}, erro = null; state.skipRender = false;
+      TESTS.forEach(function (t) {
+        ["m", "f"].forEach(function (k) {
+          var raw = document.getElementById("m-" + k + "-" + t.id).value.trim().replace(",", ".");
+          if (raw === "") return;
+          var n = Number(raw);
+          if (!isFinite(n) || n <= 0) { erro = t.nome; return; }
+          if (n !== t[k]) { metasObj[t.id] = metasObj[t.id] || {}; metasObj[t.id][k] = n; }
+        });
+      });
+      if (erro) { state.msg = { k: "err", t: "Valor inválido em " + erro + ". Use um número maior que zero.", w: "metas" }; return render(); }
+      savePerfil(Object.assign({}, state.perfil, { metas: metasObj })).then(function () { state.msg = { k: "ok", t: "Metas salvas. O Painel já usa os novos valores.", w: "metas" }; render(); })
+        .catch(function () { state.msg = { k: "err", t: "Não foi possível salvar. Tente de novo.", w: "metas" }; render(); });
+      return;
+    }
+    if (ev.target.id === "faixasForm") {
+      var kk = state.perfil.sexo === "f" ? "f" : "m", allFx = JSON.parse(JSON.stringify(state.perfil.faixasV2 || {})), err2 = null; state.skipRender = false;
+      TESTS.forEach(function (t) {
+        if (err2) return;
+        var prev = t[kk], arr = [], def = t.fx[kk];
+        for (var i = 0; i < 6; i++) {
+          var raw = document.getElementById("fx-" + i + "-" + t.id).value.trim().replace(",", "."), n = raw === "" ? def[i] : Number(raw);
+          if (!isFinite(n) || n <= 0) { err2 = t.nome + " (" + fp(PTS[i]) + " pts): valor inválido."; return; }
+          if (t.dir === 1 ? n <= prev : n >= prev) { err2 = t.nome + ": " + fp(PTS[i]) + " pts precisa ser " + (t.dir === 1 ? "maior" : "menor") + " que o valor anterior."; return; }
+          arr.push(n); prev = n;
+        }
+        allFx[t.id] = allFx[t.id] || {}; allFx[t.id][kk] = arr;
+      });
+      if (err2) { state.msg = { k: "err", t: err2, w: "faixas" }; return render(); }
+      savePerfil(Object.assign({}, state.perfil, { faixasV2: allFx })).then(function () { state.msg = { k: "ok", t: "Faixas salvas. O Painel já usa os novos valores.", w: "faixas" }; render(); })
+        .catch(function () { state.msg = { k: "err", t: "Não foi possível salvar. Tente de novo.", w: "faixas" }; render(); });
+      return;
+    }
+    if (ev.target.id === "onb") {
+      var nome = document.getElementById("o-nome").value.trim();
+      state.skipRender = false;
+      if (!nome) { state.msg = { k: "err", t: "Digite seu nome para começar.", w: "onb" }; return render(); }
+      var np = { nome: nome, sexo: document.getElementById("o-sexo").value, objetivo: document.getElementById("o-obj").value.trim(), inicio: today(), configurado: true };
+      state.msg = null;
+      savePerfil(np).then(function () { state.tab = "painel"; render(); }).catch(function () { state.msg = { k: "err", t: "Não foi possível salvar. Tente de novo.", w: "onb" }; render(); });
+      return;
+    }
+    if (ev.target.id === "perfil") {
+      var p = Object.assign({}, state.perfil, { nome: document.getElementById("p-nome").value.trim(), objetivo: document.getElementById("p-obj").value.trim(), inicio: document.getElementById("p-ini").value, prova: document.getElementById("p-prova").value });
+      state.skipRender = false;
+      savePerfil(p).then(function () { state.msg = { k: "ok", t: "Perfil salvo.", w: "perfil" }; render(); });
+    }
+  });
+
+  // ---------- Início ----------
+  loadLocal();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js"); } catch (e) {}
+})();
+</script>
+</body>
+</html>
