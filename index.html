@@ -493,8 +493,31 @@ td.mine, th.mine { background: var(--info-bg); color: var(--info); }
   }
   function crReset() { CR.running = false; CR.pre = 0; CR.acc = 0; CR.done = false; crRelease(); crUpdate(); }
 
+  function dupGroups() {
+    var g = {};
+    state.sessoes.forEach(function (x) { var k = x.data + "|" + (x.tipo || "Treino"); (g[k] = g[k] || []).push(x); });
+    return Object.keys(g).map(function (k) { return g[k]; }).filter(function (a) { return a.length > 1; });
+  }
+  function juntar() {
+    var gs = dupGroups(), feitos = 0, pulados = 0, chain = Promise.resolve();
+    gs.forEach(function (g) {
+      var base = Object.assign({}, g[0]), ok = true, obs = [], keep = g[0].id, rest = g.slice(1);
+      rest.forEach(function (r) { TESTS.forEach(function (t) { var a = base[t.id], b = r[t.id]; if (typeof b === "number") { if (typeof a === "number" && a !== b) ok = false; else base[t.id] = b; } }); });
+      if (!ok) { pulados++; return; }
+      g.forEach(function (r) { if (r.obs && obs.indexOf(r.obs) < 0) obs.push(r.obs); });
+      base.obs = obs.join(" · "); delete base.id; feitos++;
+      chain = chain.then(function () { return saveSessao(base, keep); }).then(function () {
+        return rest.reduce(function (p, r) { return p.then(function () { return removeSessao(r.id); }); }, Promise.resolve());
+      });
+    });
+    chain.then(function () {
+      state.msg = { k: pulados ? "err" : "ok", w: "hist", t: feitos + (feitos === 1 ? " dia juntado" : " dias juntados") + (pulados ? ". " + pulados + " não foi juntado porque o mesmo teste tem valores diferentes. Edite um deles." : ".") };
+      state.skipRender = false; render();
+    }).catch(function () { state.msg = { k: "err", w: "hist", t: "Não foi possível juntar os treinos. Tente de novo." }; render(); });
+  }
   function exportBar() {
     var h = "";
+    var gd = dupGroups(); if (gd.length) h += '<button type="button" class="btn sec" data-act="juntar" style="width:100%;margin-bottom:12px">Juntar treinos do mesmo dia (' + gd.length + ')</button>';
     h += '<div class="btn-row" style="margin-bottom:12px">' + (state.sessoes.length ? '<button type="button" class="btn sec" data-act="export">Exportar CSV</button>' : "") +
       '<label class="btn sec" for="imp" style="cursor:pointer">Importar CSV</label><input id="imp" type="file" accept=".csv,text/csv,text/plain,application/vnd.ms-excel" style="position:absolute;opacity:0;width:1px;height:1px"></div>';
     if (state.msg && state.msg.w === "hist") h += '<p class="msg ' + state.msg.k + '" role="status" style="margin-bottom:12px">' + esc(state.msg.t) + "</p>";
@@ -782,6 +805,7 @@ td.mine, th.mine { background: var(--info-bg); color: var(--info); }
     if (a === "crToggle") return crToggle();
     if (a === "crReset") return crReset();
     if (a === "export") return exportCsv();
+    if (a === "juntar") return juntar();
     if (a === "resetFaixas") { savePerfil(Object.assign({}, state.perfil, { faixasV2: {} })).then(function () { state.msg = { k: "ok", t: "Faixas do edital 2021 restauradas.", w: "faixas" }; render(); }); return; }
     if (a === "resetMetas") { savePerfil(Object.assign({}, state.perfil, { metas: {} })).then(function () { state.msg = { k: "ok", t: "Metas do edital 2021 restauradas.", w: "metas" }; render(); }); return; }
     if (a === "askDel") { state.confirmDel = id; return render(); }
@@ -838,9 +862,17 @@ td.mine, th.mine { background: var(--info-bg); color: var(--info); }
       if (!isoOk(data)) { state.msg = { k: "err", t: "Escolha a data do treino." }; return render(); }
       if (bad) { state.msg = { k: "err", t: "Valor inválido em " + bad + ". Use um número maior que zero ou deixe em branco." }; return render(); }
       if (!any) { state.msg = { k: "err", t: "Preencha pelo menos um teste." }; return render(); }
-      var wasEdit = state.editId;
-      saveSessao(o, state.editId).then(function () {
-        state.editId = null; state.msg = { k: "ok", t: wasEdit ? "Registro atualizado." : "Registro salvo. O Painel já mostra o novo resultado." };
+      var wasEdit = state.editId, saveId = state.editId, merged = false;
+      if (!saveId) {
+        var ex = state.sessoes.filter(function (x) { return x.data === o.data && (x.tipo || "Treino") === o.tipo; })[0];
+        if (ex) {
+          TESTS.forEach(function (t) { if (o[t.id] == null) o[t.id] = typeof ex[t.id] === "number" ? ex[t.id] : null; });
+          o.obs = [ex.obs, o.obs].filter(function (x, i, a) { return x && a.indexOf(x) === i; }).join(" · ");
+          saveId = ex.id; merged = true;
+        }
+      }
+      saveSessao(o, saveId).then(function () {
+        state.editId = null; state.msg = { k: "ok", t: wasEdit ? "Registro atualizado." : merged ? "Adicionado ao treino de " + fdate(o.data, true) + ". Tudo do mesmo dia fica junto." : "Registro salvo. O Painel já mostra o novo resultado." };
         state.tab = wasEdit ? "historico" : "registrar"; if (wasEdit) state.msg = null; render(); window.scrollTo(0, 0);
       }).catch(function () { state.msg = { k: "err", t: "Não foi possível salvar. Tente de novo." }; render(); });
     }
