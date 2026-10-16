@@ -687,7 +687,7 @@ td.mine, th.mine { background: var(--info-bg); color: var(--info); }
     var st = TESTS.filter(function (t) { return t.id === state.sel; })[0] || TESTS[0];
     h += '<div class="section-h"><h2>Evolução</h2><span>escolha o teste</span></div><div class="chips" role="group" aria-label="Teste do gráfico">' +
       TESTS.map(function (t) { return '<button class="chip" data-act="sel" data-id="' + t.id + '" aria-pressed="' + (t.id === st.id) + '">' + t.curto + "</button>"; }).join("") + '</div><div class="chart"><h3>' + st.nome + '</h3><p class="sub">' + (st.dir === 1 ? "Quanto maior, melhor" : "Quanto menor, melhor") + " · linha tracejada é a meta mínima</p>" + chartSvg(st) + "</div>";
-    h += '<p class="sync">' + "Seus registros ficam só neste aparelho. Exporte o CSV de vez em quando, como cópia.<br>" + AVISO + "</p>";
+    h += '<p class="sync">' + "Seus registros ficam só neste aparelho. Exporte o CSV de vez em quando, como cópia.<br>" + AVISO + "<br>Versão 3 · 16/10/2026</p>";
     return h;
   }
 
